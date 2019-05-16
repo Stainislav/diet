@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Calculator</title>
+</head>
+
+<body>
+    <div class="container">
+    <h1>Калькулятор калорий</h1>
+    
+    <form method="post" id="submit_form">{% csrf_token %}
+    
+    <div class="form-row">
+        <div class="col">
+            <label for="weight">Вес (кг):</lable>
+            <input class="form-control" type="number" id="weight" name="weight" min="1" max="500" required="">
+        </div>
+        <div class="col">
+            <label for="height">Рост (см):</lable>
+            <input class="form-control" type="number" id="height" name="height" min="1" max="500" required="">
+        </div>
+        <div class="col">
+            <label for="age">Возраст (в годах):</lable>
+            <input class="form-control" type="number" id="age" name="age" min="1" max="200" required="">                      
+        </div>            
+    </div>        
+            
+            
+    <div class="form-row">                 
+        <div class="col">
+            <lable>Пол:</lable>
+            <div class="form-check">                   
+                <input class="form-check-input" type="radio" name="gender" id="male_id" value="male" required="">
+                <label class="form-check-label" for="male_id">
+                мужской
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="gender" id="female_id" value="female" required="">
+                <label class="form-check-label" for="female_id">
+                женский
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="col">
+            <lable>Степень физической активности:</lable>
+            <select class="custom-select" id="inlineFormCustomSelect">
+                <option selected name="activity" value="no">Сидячий образ жизни (мало или совсем не делаете упражнения, сидячая работа)</option>
+                <option name="activity" value="low">Небольшая активность (небольшая физическая нагрузка/ занятия спортом 1-3 раза в неделю)</option>
+                <option name="activity" value="middle">Умеренная активность (достаточно большая физическая нагрузка / занятия спортом 3-5 раз в неделю)</option>
+                <option name="activity" value="high">Высокая активность (большая физическая нагрузка/ занятия спортом 6-7 раз в неделю)</option>
+                <option name="activity" value="super">Очень высокая активность (очень большая ежедневная физическая нагрузка/ занятия спортом и физическая работа или тренировки 2 раза в день, например, марафон, соревнования)</option>
+            </select>
+        </div>
+    </div>
+    <button id="button" type="submit" class="btn btn-light">Рассчитать калорийность</button>               
+    </form>
+    <!-- end of class "container"-->
+    </div>
+   
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <span id="calories"></span>    
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+    {% block javascript %}
+    <script>
+        $("#submit_form").submit(function (e) {
+          e.preventDefault();
+          var gender = $('[name=gender]:checked').val();
+          var activity = $('[name=activity]:checked').val();
+        
+
+
+
+          console.log('пол:', gender);
+
+
+
+          var submit_form = $(this).val();
+
+
+          //var username = document.getElementsByTagName('username');
+          var username = $('#username').val();
+          var weight = $('#weight').val();
+          var height = $('#height').val();
+          var age = $('#age').val();
+          var male_gender = $('#male_gender').val();
+          //var username = $('#username').val();              
+          
+          console.log(username);
+          var csrf_token = jQuery("[name=csrfmiddlewaretoken]").val();
+              
+          $.ajax({
+            //url: '{% url "get_calories" %}',
+            url: 'get_calories/',
+            type: 'POST',
+            data: {
+              'submit_form': submit_form,
+              'username': username,
+              'activity': activity,
+              'weight': weight,
+              'height': height,
+              'gender': gender,
+              'age': age,  
+              'male_gender': male_gender,
+              'csrfmiddlewaretoken': csrf_token
+            },
+            dataType: 'json',
+            success: function (data) {
+              console.log("Форма была отправлена!");
+              //console.log(data.weight);
+              //console.log(data.gender);
+              //console.log(data.activity);
+              //$('#calories').text(data.username, data.weight, data.male_gender, data.gender);
+              var html_string = "Ваша суточная потребность в калориях: " + String(data.daily_calorie_requirement) + " ккал.";
+              console.log(html_string);
+              $('#calories').html(html_string);
+            },
+            error: function() {
+                 console.log("the error");
+            }    
+          });
+
+        });
+    </script>
+    {% endblock %}
+    
+
+</body>
+</html>
+
