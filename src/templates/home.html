@@ -8,6 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Calculator</title>
+   
 </head>
 
 <body>
@@ -17,42 +18,38 @@
     <form method="post" id="submit_form">{% csrf_token %}
     
     <div class="form-row">
-        <div class="col">
-            <label for="weight">Вес (кг):</lable>
+        <div class="form-group col-md-4">
+            <label for="weight">Вес (кг):</label>
             <input class="form-control" type="number" id="weight" name="weight" min="1" max="500" required="">
         </div>
-        <div class="col">
-            <label for="height">Рост (см):</lable>
+        <div class="form-group col-md-4">
+            <label for="height">Рост (см):</label>
             <input class="form-control" type="number" id="height" name="height" min="1" max="500" required="">
-        </div>
-        <div class="col">
-            <label for="age">Возраст (в годах):</lable>
+        </div>          
+        <div class="form-group col-md-4">
+            <label for="age">Возраст (в годах):</label>
             <input class="form-control" type="number" id="age" name="age" min="1" max="200" required="">                      
-        </div>            
+        </div>          
     </div>        
-            
-            
-    <div class="form-row">                 
-        <div class="col">
-            <lable>Пол:</lable>
-            <div class="form-check">                   
-                <input class="form-check-input" type="radio" name="gender" id="male_id" value="male" required="">
-                <label class="form-check-label" for="male_id">
-                мужской
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="gender" id="female_id" value="female" required="">
-                <label class="form-check-label" for="female_id">
-                женский
-                </label>
-            </div>
+                             
+    <div class="form-group">
+        <label>Пол:</label>
+        <div class="form-check">                   
+            <input class="form-check-input" type="radio" name="gender" id="male_id" value="male" required="">
+            <label class="form-check-label" for="male_id">
+            мужской
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="gender" id="female_id" value="female" required="">
+            <label class="form-check-label" for="female_id">
+            женский
+            </label>
         </div>
     </div>
-
-    <div class="form-row">
-        <div class="col">
-            <lable>Степень физической активности:</lable>
+    
+    <div class="form-group">
+        <label>Степень физической активности:</label>
             <select class="custom-select" id="inlineFormCustomSelect">
                 <option selected name="activity" value="no">Сидячий образ жизни (мало или совсем не делаете упражнения, сидячая работа)</option>
                 <option name="activity" value="low">Небольшая активность (небольшая физическая нагрузка/ занятия спортом 1-3 раза в неделю)</option>
@@ -61,12 +58,12 @@
                 <option name="activity" value="super">Очень высокая активность (очень большая ежедневная физическая нагрузка/ занятия спортом и физическая работа или тренировки 2 раза в день, например, марафон, соревнования)</option>
             </select>
         </div>
-    </div>
-    <button id="button" type="submit" class="btn btn-light">Рассчитать калорийность</button>               
+        <button id="button" type="submit" class="btn btn-secondary">Рассчитать калорийность</button>                     
     </form>
-    <!-- end of class "container"-->
+
+    <!-- end of container class-->
     </div>
-   
+    <p>
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -89,30 +86,18 @@
           e.preventDefault();
           var gender = $('[name=gender]:checked').val();
           var activity = $('[name=activity]:checked').val();
-        
-
-
-
-          console.log('пол:', gender);
-
-
 
           var submit_form = $(this).val();
 
-
-          //var username = document.getElementsByTagName('username');
           var username = $('#username').val();
           var weight = $('#weight').val();
           var height = $('#height').val();
           var age = $('#age').val();
-          var male_gender = $('#male_gender').val();
-          //var username = $('#username').val();              
+          var male_gender = $('#male_gender').val();          
           
-          console.log(username);
           var csrf_token = jQuery("[name=csrfmiddlewaretoken]").val();
               
           $.ajax({
-            //url: '{% url "get_calories" %}',
             url: 'get_calories/',
             type: 'POST',
             data: {
@@ -129,10 +114,6 @@
             dataType: 'json',
             success: function (data) {
               console.log("Форма была отправлена!");
-              //console.log(data.weight);
-              //console.log(data.gender);
-              //console.log(data.activity);
-              //$('#calories').text(data.username, data.weight, data.male_gender, data.gender);
               var html_string = "Ваша суточная потребность в калориях: " + String(data.daily_calorie_requirement) + " ккал.";
               console.log(html_string);
               $('#calories').html(html_string);
